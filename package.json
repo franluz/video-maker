@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/franluz/video-maker#readme",
   "dependencies": {
+    "algorithmia": "^0.3.10",
     "readline-sync": "^1.4.10",
     "rss-parser": "^3.7.3"
   }

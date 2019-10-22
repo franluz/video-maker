@@ -9,7 +9,7 @@ const TREND_URL = 'https://trends.google.com/trends/trendingsearches/daily/rss?g
         const sourceContent = {}
         sourceContent.searchTerm = await askAndReturnTerm()
         sourceContent.prefix =  askAndReturnPrefix()
-        robots.text(sourceContent)
+        await robots.text(sourceContent)
         
         async function askAndReturnTerm(){
             const response = readline.question('Type a Wikipidia search Term: ')

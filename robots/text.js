@@ -1,4 +1,33 @@
-function robot(content){
-    console.log(`Recebi com sucesso o content: ${content.searchTerm}`)
+const algorithmia = require('algorithmia')
+const algorithmiaApiKey = require('../credentials/algorithmia.json').apiKey
+ async function robot(content){
+    await fetchContentFromWikipidia(content)
+    sanitizeContent(content)
+    //breakContentIntoSentences(content)
+   async function fetchContentFromWikipidia(content){
+        const algorithmiaAuthenticated = algorithmia(algorithmiaApiKey)
+        const wikipediaAlgorithim = algorithmiaAuthenticated.algo('web/WikipediaParser/0.1.2')
+        const wikipediaResponse = await wikipediaAlgorithim.pipe(content.searchTerm)
+        const wikipediaContent = wikipediaResponse.get()
+        content.sourceContentOriginal = wikipediaContent.content
+    }
+    function sanitizeContent(content){
+        const withoutBlankLinesAndMarkdown = removeBlankLinesAndMarkdown(content.sourceContentOriginal)
+        const withoutDatesInParentheses = removeDatesInParenthesis(withoutBlankLinesAndMarkdown)
+        content.sourceContentSanitized = withoutDatesInParentheses 
+        function removeBlankLinesAndMarkdown(text){
+            const allLines = text.split('\n')
+            withoutBlankLinesAndJoinMarks = allLines.filter((line)=>{
+                if(line.trim().length === 0 || line.trim().startsWith('=')){
+                    return false
+                }
+                return true
+            })
+            return withoutBlankLinesAndJoinMarks.join(' ')
+        }
+        function removeDatesInParenthesis(text){
+            return text.replace(/\((?:\([^()]*\)|[^()])*\)/gm, '').replace(/  /g,' ')
+        }
+    }
 }
 module.exports = robot
