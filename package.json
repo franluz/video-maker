@@ -1,0 +1,22 @@
+{
+  "name": "video-maker",
+  "version": "1.0.0",
+  "description": "criador de video para youtube",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/franluz/video-maker.git"
+  },
+  "author": "fFrancielle Luz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/franluz/video-maker/issues"
+  },
+  "homepage": "https://github.com/franluz/video-maker#readme",
+  "dependencies": {
+    "readline-sync": "^1.4.10"
+  }
+}
