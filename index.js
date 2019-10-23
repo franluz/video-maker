@@ -6,10 +6,12 @@ const robots = {
 const TREND_URL = 'https://trends.google.com/trends/trendingsearches/daily/rss?geo=BR' 
     async function start(){
 
-        const sourceContent = {}
-        sourceContent.searchTerm = await askAndReturnTerm()
-        sourceContent.prefix =  askAndReturnPrefix()
-        await robots.text(sourceContent)
+        const content = {
+            maximumSentences: 7
+        }
+        content.searchTerm = await askAndReturnTerm()
+        content.prefix =  askAndReturnPrefix()
+        await robots.text(content)
         
         async function askAndReturnTerm(){
             const response = readline.question('Type a Wikipidia search Term: ')
@@ -33,6 +35,6 @@ const TREND_URL = 'https://trends.google.com/trends/trendingsearches/daily/rss?g
             return selectedPrefixText
             
         }
-        console.log(sourceContent)
+        console.log(content)
     }
 start();
