@@ -16,7 +16,7 @@ const nlu = new NaturalLanguageUnderstandingV1({
     breakContentIntoSentences(content)
     limitMaximunSentences(content)
     await fetchKeywordsOfAllSentences(content)
-
+    
    async function fetchContentFromWikipidia(content){
         const algorithmiaAuthenticated = algorithmia(algorithmiaApiKey)
         const wikipediaAlgorithim = algorithmiaAuthenticated.algo('web/WikipediaParser/0.1.2')
@@ -65,7 +65,7 @@ const nlu = new NaturalLanguageUnderstandingV1({
                 text: sentence,
                 features: {
                     keywords: {}
-                }
+                } 
             }, (error, response) => {
                 if(error) {
                     throw error
