@@ -17,10 +17,11 @@ const state = require('./state.js')
     breakContentIntoSentences(content)
     limitMaximunSentences(content)
     await fetchKeywordsOfAllSentences(content)
-    
+    state.save(content)
    async function fetchContentFromWikipidia(content){
         const algorithmiaAuthenticated = algorithmia(algorithmiaApiKey)
         const wikipediaAlgorithim = algorithmiaAuthenticated.algo('web/WikipediaParser/0.1.2')
+        console.log("linguagem: "+  content.lang)
         const wikipediaResponse = await wikipediaAlgorithim.pipe({
             "lang": content.lang,
             "articleName": content.searchTerm
@@ -32,7 +33,8 @@ const state = require('./state.js')
     function sanitizeContent(content){
         const withoutBlankLinesAndMarkdown = removeBlankLinesAndMarkdown(content.sourceContentOriginal)
         const withoutDatesInParentheses = removeDatesInParenthesis(withoutBlankLinesAndMarkdown)
-        content.sourceContentSanitized = withoutDatesInParentheses 
+        const  withoutAccents = removeAcento(withoutDatesInParentheses)
+        content.sourceContentSanitized = withoutAccents 
         function removeBlankLinesAndMarkdown(text){
             const allLines = text.split('\n')
             withoutBlankLinesAndJoinMarks = allLines.filter((line)=>{
@@ -45,6 +47,17 @@ const state = require('./state.js')
         }
         function removeDatesInParenthesis(text){
             return text.replace(/\((?:\([^()]*\)|[^()])*\)/gm, '').replace(/  /g,' ')
+        }
+       function removeAcento (text)
+        {       
+            text = text.toLowerCase();                                                         
+            text = text.replace(new RegExp('[ÁÀÂÃ]','gi'), 'a');
+            text = text.replace(new RegExp('[ÉÈÊ]','gi'), 'e');
+            text = text.replace(new RegExp('[ÍÌÎ]','gi'), 'i');
+            text = text.replace(new RegExp('[ÓÒÔÕ]','gi'), 'o');
+            text = text.replace(new RegExp('[ÚÙÛ]','gi'), 'u');
+            text = text.replace(new RegExp('[Ç]','gi'), 'c');
+            return text;                 
         }
     }
     function breakContentIntoSentences(content){
@@ -60,9 +73,7 @@ const state = require('./state.js')
     }
     async function fetchKeywordsOfAllSentences(content) {
         for(const sentence of content.sentences){
-            console.log(`> [text-robot] Sentence: "${sentence.text}"`)
             sentence.keywords = await fetchWatsonAndReturnKeywords(sentence.text)
-            console.log(`> [text-robot] Keywords: ${sentence.keywords.join(' , ')} \n `)
         }
     }
     async function fetchWatsonAndReturnKeywords(sentence) {
