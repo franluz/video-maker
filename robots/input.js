@@ -1,28 +1,28 @@
 const Parser = require('rss-parser')
 const readline = require('readline-sync')
 const state = require('./state.js')
-const TREND_URL = 'https://trends.google.com/trends/trendingsearches/daily/rss?geo=US'
+const TREND_URL = 'https://trends.google.com/trends/trendingsearches/daily/rss?geo=BR'
 async function robot(){
     const content = {
         maximumSentences: 7
     }
     content.searchTerm = await askAndReturnTerm()
-    content.prefix =  askAndReturnPrefix()
-    content.lang = askAndReturnLang()
+    content.prefix =  await askAndReturnPrefix()
+    content.lang = await askAndReturnLang()
     state.save(content)
 
     async function askAndReturnTerm(){
         const response = readline.question('Type a Wikipidia search Term: ')
         return (response.toUpperCase() === 'G') ? await askAndReturnTrend(): response
     }
-    function askAndReturnPrefix(){
+   async function askAndReturnPrefix(){
         const prefixes = ['Who is', 'What is ', 'The History of']
         const selectedPrefixIndex = readline.keyInSelect(prefixes, 'Choose one option: ')
         const selectedPrefixText = prefixes[selectedPrefixIndex]
         return selectedPrefixText
         
     }
-    function askAndReturnLang(){
+   async function askAndReturnLang(){
         const languages = ['en','pt']
         const selectedIndexLang = readline.keyInSelect(languages,'Choice Language:')
         const selectedIndexSigla = languages[selectedIndexLang]

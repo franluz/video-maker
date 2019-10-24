@@ -21,18 +21,21 @@ async function robot(){
             auth: googleSearchCredentials.apikey,
             cx: googleSearchCredentials.searchEngineId,
             q: query,
-            searchType:'image',
+            searchType: 'image',
             imgSize: 'huge',
             num:2
         })
 
-        const imagesUrl = response.data.items.map(item=>{
-            return item.link
-        })
-
+        let imagesUrl =[]
+        if(response.data.items){
+            imagesUrl = response.data.items.map(item=>{
+                console.log(item.link)
+                return item.link
+            })
+        }
         return imagesUrl
     }
     
-    //process.exit(0)
+    process.exit(0)
 }
 module.exports = robot
