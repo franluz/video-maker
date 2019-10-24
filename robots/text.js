@@ -59,7 +59,9 @@ const nlu = new NaturalLanguageUnderstandingV1({
     }
     async function fetchKeywordsOfAllSentences(content) {
         for(const sentence of content.sentences){
+            console.log(`> [text-robot] Sentence: "${sentence.text}"`)
             sentence.keywords = await fetchWatsonAndReturnKeywords(sentence.text)
+            console.log(`> [text-robot] Keywords: ${sentence.keywords.join(' , ')} \n `)
         }
     }
     async function fetchWatsonAndReturnKeywords(sentence) {
