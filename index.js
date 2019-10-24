@@ -11,6 +11,7 @@ const TREND_URL = 'https://trends.google.com/trends/trendingsearches/daily/rss?g
         }
         content.searchTerm = await askAndReturnTerm()
         content.prefix =  askAndReturnPrefix()
+        content.lang = askAndReturnLang()
         await robots.text(content)
         
         async function askAndReturnTerm(){
@@ -34,6 +35,12 @@ const TREND_URL = 'https://trends.google.com/trends/trendingsearches/daily/rss?g
             const selectedPrefixText = prefixes[selectedPrefixIndex]
             return selectedPrefixText
             
+        }
+        function askAndReturnLang(){
+            const languages = ['en','pt']
+            const selectedIndexLang = readline.keyInSelect(languages,'Choice Language:')
+            const selectedIndexSigla = languages[selectedIndexLang]
+            return selectedIndexSigla
         }
         console.log(content)
     }
