@@ -20,7 +20,10 @@ const nlu = new NaturalLanguageUnderstandingV1({
    async function fetchContentFromWikipidia(content){
         const algorithmiaAuthenticated = algorithmia(algorithmiaApiKey)
         const wikipediaAlgorithim = algorithmiaAuthenticated.algo('web/WikipediaParser/0.1.2')
-        const wikipediaResponse = await wikipediaAlgorithim.pipe(content.searchTerm)
+        const wikipediaResponse = await wikipediaAlgorithim.pipe({
+            "lang": content.lang,
+            "articleName": content.searchTerm
+        })
         const wikipediaContent = wikipediaResponse.get()
         content.sourceContentOriginal = wikipediaContent.content
         
