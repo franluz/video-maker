@@ -9,8 +9,9 @@ const nlu = new NaturalLanguageUnderstandingV1({
     version: '2018-11-16',
     url: watsonApiKey.url
 });
-
- async function robot(content){
+const state = require('./state.js')
+ async function robot(){
+    const content = state.load()
     await fetchContentFromWikipidia(content)
     sanitizeContent(content)
     breakContentIntoSentences(content)
