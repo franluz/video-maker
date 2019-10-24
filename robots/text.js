@@ -21,6 +21,7 @@ const state = require('./state.js')
    async function fetchContentFromWikipidia(content){
         const algorithmiaAuthenticated = algorithmia(algorithmiaApiKey)
         const wikipediaAlgorithim = algorithmiaAuthenticated.algo('web/WikipediaParser/0.1.2')
+        console.log("linguagem: "+  content.lang)
         const wikipediaResponse = await wikipediaAlgorithim.pipe({
             "lang": content.lang,
             "articleName": content.searchTerm
