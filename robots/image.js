@@ -1,4 +1,5 @@
 const google = require('googleapis').google
+const imageDownload = require('image-downloader')
 const custumerSearch = google.customsearch('v1')
 const state = require('./state.js')
 const googleSearchCredentials = require('../credentials/google-search.json')
@@ -38,7 +39,6 @@ async function robot(){
     
     async function downloadAllImages(content){
         content.downloadedImages = []
-        content.sentences[1].images[0]=`https://www.ok-magazin.de/sites/default/files/Bilder/Ulrike/2018/08/ddp_21.00208702.jpg`
         for(let sentenceIndex = 0; sentenceIndex<= content.sentences.length; sentenceIndex++ ){
             let images = []
             if(content.sentences[sentenceIndex]){
@@ -50,8 +50,9 @@ async function robot(){
                     if(content.downloadedImages.includes(imageUrl)){
                         throw new Error('imagem já foi baixada')
                     }
+                    await downloadImageAndSave(imageUrl,`${sentenceIndex}-original.png`)
                     content.downloadedImages.push(imageUrl)
-                    // await downloadAllImage()
+                    
                     console.log(`>[${sentenceIndex}][${imageIndex}] Baixou com sucesso: ${imageUrl} `)
                     break
                 }catch(err){
@@ -59,6 +60,12 @@ async function robot(){
                 }
             }
         }
+    }
+    async function downloadImageAndSave(url,fileName){
+        return imageDownload.image({
+            url:url,
+            dest:`./content/${fileName}`
+        })
     }
 }
 module.exports = robot
