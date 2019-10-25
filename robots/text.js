@@ -11,6 +11,7 @@ const nlu = new NaturalLanguageUnderstandingV1({
 });
 const state = require('./state.js')
  async function robot(){
+    state.load()
     const content = state.load()
     await fetchContentFromWikipidia(content)
     sanitizeContent(content)
@@ -33,8 +34,7 @@ const state = require('./state.js')
     function sanitizeContent(content){
         const withoutBlankLinesAndMarkdown = removeBlankLinesAndMarkdown(content.sourceContentOriginal)
         const withoutDatesInParentheses = removeDatesInParenthesis(withoutBlankLinesAndMarkdown)
-        const  withoutAccents = removeAcento(withoutDatesInParentheses)
-        content.sourceContentSanitized = withoutAccents 
+        content.sourceContentSanitized = withoutDatesInParentheses 
         function removeBlankLinesAndMarkdown(text){
             const allLines = text.split('\n')
             withoutBlankLinesAndJoinMarks = allLines.filter((line)=>{

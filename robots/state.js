@@ -6,7 +6,7 @@ function save(content){
     return fs.writeFileSync(contentFilePath,contentString)
 }
 function load(){
- const fileBuffer = fs.readFileSync(contentFilePath,'utf-8')
+ const fileBuffer = fs.readFileSync(contentFilePath)
  const contentJson = JSON.parse(fileBuffer)
  return contentJson
 }
