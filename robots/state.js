@@ -10,8 +10,13 @@ function load(){
  const contentJson = JSON.parse(fileBuffer)
  return contentJson
 }
- 
+function saveScript(content) {
+    const contentString = JSON.stringify(content)
+    const scriptString = `var content = ${contentString}`
+    return fs.writeFileSync(scriptFilePath, scriptString)
+}
 module.exports = {
     save,
+    saveScript,
     load
 }
