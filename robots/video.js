@@ -3,7 +3,7 @@ const state = require('./state.js')
 const ffmpeg = require('fluent-ffmpeg');
 const videoshow = require('videoshow')
 const ffprobe = require('@ffprobe-installer/ffprobe');
-
+ffmpeg.setFfprobePath(ffprobe.path);
 async function robot() {
   console.log('> [video-robot] Starting...')
   const content = state.load()
@@ -162,8 +162,8 @@ async function robot() {
         audioChannels: 2,
         format: "mp4",
         pixelFormat: "yuv420p",
-        useSubRipSubtitles: false, // Use ASS/SSA subtitles instead
-        subtitleStyle: {
+        useSubRipSubtitles: false//, // Use ASS/SSA subtitles instead
+      /*  subtitleStyle: {
           Fontname: "Verdana",
           Fontsize: "26",
           PrimaryColour: "11861244",
@@ -179,12 +179,12 @@ async function robot() {
           MarginL: "40",
           MarginR: "60",
           MarginV: "40"
-        }
+        }*/
       };
 
       videoshow(images, videoOptions)
-        .audio("./templates/1/newsroom.mp3")
-        .save("./content/output.mp4")
+       // .audio("./templates/1/newsroom.mp3")
+        .save(`./content/output.mp4`)
         .on("start", (command) =>  {
           console.log("> Processo ffmpeg iniciado:", command);
         })
