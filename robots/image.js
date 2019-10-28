@@ -5,8 +5,8 @@ const state = require('./state.js')
 const googleSearchCredentials = require('../credentials/google-search.json')
 async function robot(){
     const content = state.load()
-  //  await fetchImagesOfAllSentences(content)
-    //state.save(content)
+    await fetchImagesOfAllSentences(content)
+    state.save(content)
     await downloadAllImages(content)
     async function fetchImagesOfAllSentences(content){
         for (const sentence of content.sentences){
@@ -24,7 +24,7 @@ async function robot(){
             q: query,
             searchType:'image',
             imgSize: 'huge',
-            num:2
+            num:7
         })
 
         let  imagesUrl = []
