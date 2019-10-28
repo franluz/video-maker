@@ -17,7 +17,11 @@
   },
   "homepage": "https://github.com/franluz/video-maker#readme",
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
+    "@ffprobe-installer/ffprobe": "^1.0.12",
     "algorithmia": "^0.3.10",
+    "ffmpeg": "0.0.4",
+    "fluent-ffmpeg": "^2.1.2",
     "gm": "^1.23.1",
     "google-search": "0.0.5",
     "googleapis": "^44.0.0",
@@ -26,6 +30,7 @@
     "readline-sync": "^1.4.10",
     "rss-parser": "^3.7.3",
     "sbd": "^1.0.16",
+    "videoshow": "^0.1.11",
     "watson-developer-cloud": "^4.0.1"
   }
 }

@@ -1,9 +1,8 @@
 const gm = require('gm').subClass({imageMagick: true})
 const state = require('./state.js')
-const spawn = require('child_process').spawn
-const path = require('path')
-const rootPath = path.resolve(__dirname, '..')
-
+const ffmpeg = require('fluent-ffmpeg');
+const videoshow = require('videoshow')
+const ffprobe = require('@ffprobe-installer/ffprobe');
 
 async function robot() {
   console.log('> [video-robot] Starting...')
@@ -12,8 +11,7 @@ async function robot() {
   await convertAllImages(content)
   await createAllSentenceImages(content)
   await createYouTubeThumbnail()
-  await createAfterEffectsScript(content)
-  await renderVideoWithAfterEffects()
+  await renderVideoWithNode(content)
 
   state.save(content)
 
@@ -29,8 +27,8 @@ async function robot() {
       const outputFile = `./content/${sentenceIndex}-converted.png`
       const width = 1920
       const height = 1080
-
-      gm()
+      
+        gm()
         .in(inputFile)
         .out('(')
           .out('-clone')
@@ -52,13 +50,14 @@ async function robot() {
         .out('-extent', `${width}x${height}`)
         .write(outputFile, (error) => {
           if (error) {
-            return reject(error)
+         //   return reject(error)
+            console.log(error)
           }
 
           console.log(`> [video-robot] Image converted: ${outputFile}`)
           resolve()
         })
-
+      
     })
   }
 
@@ -137,33 +136,68 @@ async function robot() {
     })
   }
 
-  async function createAfterEffectsScript(content) {
-    await state.saveScript(content)
-  }
-
-  async function renderVideoWithAfterEffects() {
+  
+  async function renderVideoWithNode(content) {
     return new Promise((resolve, reject) => {
-      const aerenderFilePath = '/Applications/Adobe After Effects CC 2019/aerender'
-      const templateFilePath = `${rootPath}/templates/1/template.aep`
-      const destinationFilePath = `${rootPath}/content/output.mov`
+      console.log("> Renderizando vídeo com node.");
 
-      console.log('> [video-robot] Starting After Effects')
+      let images = [];
 
-      const aerender = spawn(aerenderFilePath, [
-        '-comp', 'main',
-        '-project', templateFilePath,
-        '-output', destinationFilePath
-      ])
+      for (let sentenceIndex = 0;sentenceIndex < content.sentences.length; sentenceIndex++ ) {
+        images.push({
+          path: `./content/${sentenceIndex}-converted.png`,
+          caption: content.sentences[sentenceIndex].text
+        });
+      }
 
-      aerender.stdout.on('data', (data) => {
-        process.stdout.write(data)
-      })
+      const videoOptions = {
+        fps: 25,
+        loop: 5, // seconds
+        transition: true,
+        transitionDuration: 1, // seconds
+        videoBitrate: 1024,
+        videoCodec: "libx264",
+        size: "640x?",
+        audioBitrate: "128k",
+        audioChannels: 2,
+        format: "mp4",
+        pixelFormat: "yuv420p",
+        useSubRipSubtitles: false, // Use ASS/SSA subtitles instead
+        subtitleStyle: {
+          Fontname: "Verdana",
+          Fontsize: "26",
+          PrimaryColour: "11861244",
+          SecondaryColour: "11861244",
+          TertiaryColour: "11861244",
+          BackColour: "-2147483640",
+          Bold: "2",
+          Italic: "0",
+          BorderStyle: "2",
+          Outline: "2",
+          Shadow: "3",
+          Alignment: "1", // left, middle, right
+          MarginL: "40",
+          MarginR: "60",
+          MarginV: "40"
+        }
+      };
 
-      aerender.on('close', () => {
-        console.log('> [video-robot] After Effects closed')
-        resolve()
-      })
-    })
+      videoshow(images, videoOptions)
+        .audio("./templates/1/newsroom.mp3")
+        .save("./content/output.mp4")
+        .on("start", (command) =>  {
+          console.log("> Processo ffmpeg iniciado:", command);
+        })
+        .on("error", (err, stdout, stderr) => {
+          console.error("Error:", err);
+          console.error("> ffmpeg stderr:", stderr);
+          reject(err);
+        })
+        .on("end", (output) => {
+          console.error("> Video criado:", output);
+          resolve();
+        });
+    });
   }
 
 }

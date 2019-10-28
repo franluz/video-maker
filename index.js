@@ -12,6 +12,6 @@ const robots = {
         await robots.image()
         await robots.video()
         const content = robots.state.load();
-        console.dir(content,{depth:null})
+        //console.dir(content,{depth:null})
     }
 start();
