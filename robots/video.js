@@ -3,6 +3,7 @@ const state = require('./state.js')
 const ffmpeg = require('fluent-ffmpeg');
 const videoshow = require('videoshow')
 const ffprobe = require('@ffprobe-installer/ffprobe');
+ffmpeg.setFfprobePath(ffprobe.path)
 
 async function robot() {
   console.log('> [video-robot] Starting...')
@@ -143,60 +144,31 @@ async function robot() {
 
       let images = [];
 
-      for (let sentenceIndex = 0;sentenceIndex < content.sentences.length; sentenceIndex++ ) {
+     for (let sentenceIndex = 0;sentenceIndex <2; sentenceIndex++ ) {
         images.push({
           path: `./content/${sentenceIndex}-converted.png`,
-          caption: content.sentences[sentenceIndex].text
+          caption: content.sentences[sentenceIndex].text,
+          disableFadeOut: true,
+          loop: 2
         });
       }
-
-      const videoOptions = {
-        fps: 25,
-        loop: 5, // seconds
-        transition: true,
-        transitionDuration: 1, // seconds
-        videoBitrate: 1024,
-        videoCodec: "libx264",
-        size: "640x?",
-        audioBitrate: "128k",
-        audioChannels: 2,
-        format: "mp4",
-        pixelFormat: "yuv420p",
-        useSubRipSubtitles: false, // Use ASS/SSA subtitles instead
-        subtitleStyle: {
-          Fontname: "Verdana",
-          Fontsize: "26",
-          PrimaryColour: "11861244",
-          SecondaryColour: "11861244",
-          TertiaryColour: "11861244",
-          BackColour: "-2147483640",
-          Bold: "2",
-          Italic: "0",
-          BorderStyle: "2",
-          Outline: "2",
-          Shadow: "3",
-          Alignment: "1", // left, middle, right
-          MarginL: "40",
-          MarginR: "60",
-          MarginV: "40"
-        }
-      };
-
-      videoshow(images, videoOptions)
-        .audio("./templates/1/newsroom.mp3")
-        .save("./content/output.mp4")
-        .on("start", (command) =>  {
-          console.log("> Processo ffmpeg iniciado:", command);
-        })
-        .on("error", (err, stdout, stderr) => {
-          console.error("Error:", err);
-          console.error("> ffmpeg stderr:", stderr);
-          reject(err);
-        })
-        .on("end", (output) => {
-          console.error("> Video criado:", output);
-          resolve();
-        });
+      let options = {
+        transition: true
+      }
+      
+     
+      videoshow(images, options)
+      .save('./content/video.mp4')
+      .on('start',  (command) => {
+        console.log('ffmpeg process started:', command)
+      })
+      .on('error',  (err) => {
+        console.error('Error:', err)
+      })
+      .on('end',  (output) => {
+        console.log('Video created in:', output)
+      })
+      
     });
   }
 
