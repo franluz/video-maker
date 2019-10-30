@@ -39,12 +39,13 @@ async function robot(){
     
     async function downloadAllImages(content){
         content.downloadedImages = []
+        
         for(let sentenceIndex = 0; sentenceIndex<= content.sentences.length; sentenceIndex++ ){
             let images = []
             if(content.sentences[sentenceIndex]){
                 images = content.sentences[sentenceIndex].images 
             }
-            for(let imageIndex=0;imageIndex<images.length;imageIndex++){
+            for(let imageIndex=0 ; imageIndex<images.length ; imageIndex++){
                 const imageUrl = images[imageIndex]     
                 try{
                     if(content.downloadedImages.includes(imageUrl)){
@@ -52,7 +53,7 @@ async function robot(){
                     }
                     await downloadImageAndSave(imageUrl,`${sentenceIndex}-original.png`)
                     content.downloadedImages.push(imageUrl)
-                    
+                    content.imagesLocal.push(`./content/${sentenceIndex}-original.png`)
                     console.log(`>[${sentenceIndex}][${imageIndex}] Baixou com sucesso: ${imageUrl} `)
                     break
                 }catch(err){
@@ -62,10 +63,12 @@ async function robot(){
         }
     }
     async function downloadImageAndSave(url,fileName){
+        
         return imageDownload.image({
             url:url,
             dest:`./content/${fileName}`
         })
+       
     }
 }
 module.exports = robot

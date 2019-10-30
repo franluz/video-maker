@@ -67,7 +67,8 @@ const state = require('./state.js')
             content.sentences.push({
                 text: sentence,
                 keywords: [],
-                images: []
+                images: [],
+                imagesLocal: []
             })
         })
     }
